@@ -1,0 +1,32 @@
+# 构建产物
+/target/
+/src-tauri/target/
+/src-tauri/gen/
+/dist/
+/release/
+/installers/
+/publish/
+/Foxes-watch.exe
+/Foxes-watch-data/
+node_modules/
+
+# 日志与临时文件
+*.log
+*.tmp
+/tmp/
+.DS_Store
+Thumbs.db
+
+# 本机调试输出（可能含对话标题和目录名）
+/debug/
+*.snapshot.json
+/.cursor/
+__pycache__/
+
+# Local usage databases and credentials
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+.env
+.env.*
+!.env.example
