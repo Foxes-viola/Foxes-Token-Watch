@@ -1,85 +1,80 @@
 # Foxes Token Watch
 
-Windows 本地 AI 编程助手用量与会话状态监控工具。作者：**Foxes**。
+**Windows 本地 AI Agent 用量与会话状态监控 · v0.5.1**
 
-本项目公开源码，采用 **PolyForm Noncommercial 1.0.0** 许可。允许在许可范围内进行非商业使用、修改和分享，须保留 Foxes 署名、[许可文本](LICENSE)和[声明](NOTICE)。**未经另外授权，不允许商用**。第三方依赖仍适用各自的[许可证](THIRD_PARTY_NOTICES.txt)。
+在同一个面板查看不同 AI 编程助手用了多少 Token、哪些会话正在运行，以及一次请求的缓存命中和耗时。不打开主窗口时，也可以用桌面灵动岛和系统托盘随时看状态。
 
-## 使用前请注意：MCP 网关仍是实验支持
+[版本发布](https://github.com/Foxes-viola/Foxes-Token-Watch/releases) · [更新日志](CHANGELOG.md) · [问题反馈](https://github.com/Foxes-viola/Foxes-Token-Watch/issues) · [许可](LICENSE)
 
-**MCP 网关的用量与会话状态识别目前不稳定，这部分实现比较粗糙，不保证开箱即用。大概率需要借助 Codex 或 Claude 自行调试、修复后才能正常使用。**
+## 界面预览
 
-不同网关、插件和版本的记录格式可能不同，可能出现识别不到会话、用量估算偏差或状态更新异常。请把这部分当作可供修改的实验实现，不要把它视为成熟、通用的 MCP 网关监控方案。
+以下截图来自 v0.5.1 的实际前端，使用内置模拟数据，不包含真实会话、路径或用量历史。
 
-## 功能
+### 总览：看清用量去哪了
 
-- 读取 Claude Code、Codex、Deepseek Harness、Antigravity、Kiro 和 Cursor 的本机会话记录；Cursor 包含支持的网页 MCP 对话来源。
-- 显示 Token 用量、模型分布、请求记录以及运行中、等待中和已结束等会话状态。
-- 提供桌面灵动岛、边缘停靠、系统托盘和可选开机自启。
-- 支持深色、浅色主题，以及 K/M/B 和万/亿数字单位。
-- 对没有完整 Token 记录的来源显示估算用量；估算结果不等同于服务商账单。
+![总览：用量卡片、实时趋势和各 Agent 汇总](docs/screenshots/overview.png)
 
-## 下载与安装
+切换今日、近 7 天、近 30 天或全部记录；按 Token 类型或按 Agent 查看趋势，也可以隐藏缓存命中量，对比实际输入与输出。面板还提供模型、项目和活动分布，便于定位用量变化。
 
-在本仓库的 **Releases** 页面下载 `Foxes-Token-Watch-0.2.1-x64-Setup.exe`，运行简体中文安装向导。
+### 对话：展开查看每次请求
 
-当前发行目标为 **Windows 10/11 x64**。界面依赖 Microsoft Edge WebView2；缺少该组件时，安装器会联网下载微软的运行时安装程序。统计过程在本机完成，不向项目作者上传对话或用量数据。
+![对话列表与逐次请求明细](docs/screenshots/session-detail.png)
 
-关闭主窗口后软件继续在托盘运行；彻底退出请使用设置页或托盘中的退出按钮。
+按 Agent、项目、模型、时间等条件筛选，点击表头排序，点击一条对话展开明细。来源提供相应字段时，可查看输入、缓存读写、输出、思考量、首字延迟、总耗时，以及使用过的工具与结果计数。子代理的请求也可以纳入统计。排序、筛选和总览视图会记住上次选择。
 
-## 数据与空间占用
+### 灵动岛：不用打开主面板
 
-软件只读访问各 Agent 的来源记录。自己的设置、用量数据库和压缩缓存默认保存在：
+<img src="docs/screenshots/island.png" width="340" alt="展开的灵动岛：当日用量与正在运行的会话">
 
-```text
-%APPDATA%\com.foxes.watch\
-```
+收起时显示当日用量和状态指示，悬停展开后可查看运行中的会话。支持拖动、边缘停靠、托盘常驻、可选开机自启与完成提醒。可选深色、浅色或跟随系统主题，并可以减少动效。
 
-其中 `settings.json` 保存设置，`agent-usage.sqlite` 保存部分来源的用量记录，`cache/gateway/*.json.zst` 保存用于持续估算的历史元数据。缓存保存时间、大小和工具标识等信息，不保存对话正文、工具参数或工具响应正文。
+## 支持哪些来源？
 
-当前正式程序约 13 MB，安装包约 3.3 MB。历史数据会随使用增长，不设置固定的 30 MB 上限。`target`、`node_modules`、`tmp` 等目录用于开发和构建，正常使用安装版不会生成这些开发目录。
+- **Claude Code、Codex、Deepseek Harness、Antigravity、Kiro、Cursor**：从各自可用的本机记录提取用量和状态。
+- **Cursor 网关 / 网页 MCP、百事通**：属于实验适配。不同插件或版本的记录格式可能导致漏记、重复识别或延迟；不保证开箱即用。
+- 来源未提供准确 Token 数时，界面会标注估算。不同来源的字段完整度不一，**统计不等同于服务商的账单或剩余额度**。
 
-本地统计可能包含会话标识、来源路径和工具活动等元数据；反馈问题时请先移除私人信息，不要直接上传应用数据目录。
+## v0.5.1 有什么变化？
 
-## 从源码构建
+- 便携程序从约 **13.0 MB** 减至 **9.6 MB**，安装包从约 **3.4 MB** 减至 **2.9 MB**；保留原功能和用量历史格式。这是本版 Windows 构建记录中的体积，不是本次源码下载的大小。
+- 修复长工具名挤进「轮数」列的问题。保留 v0.5.0 引入的请求明细、主题跟随系统、减少动效及会话筛选。
+- 统计线程发生意外中断时可自动恢复；界面不展开时降低汇总频率；历史写盘更少，并保留最近七天的每日备份。详见 [更新日志](CHANGELOG.md)。
 
-准备 Node.js 24、Rust 稳定版 MSVC 工具链，以及带 Windows SDK 的 Visual Studio C++ Build Tools。
+## 本地数据与隐私
 
-```powershell
-npm ci
-npm run package:windows
-```
+- 程序只读访问 Agent 的来源记录，不修改原始日志，也不将对话正文保存到用量历史。面板及诊断信息仍可能显示会话标题、项目路径、模型和工具名；分享截图或问题日志前请先脱敏。
+- 统计在本机完成，不向作者上传数据。百事通适配会向 `127.0.0.1:9791` 的本机服务发送 GET 请求；如需补装 WebView2，安装器可能从微软下载运行时，这与用量统计无关。
+- 设置和 `history.json` 位于应用数据目录；实际位置见 **设置 → 关于**。历史备份位于 `history-backup/`。便携版可在程序旁边的 `Foxes-watch-data/` 保留一份历史；公开发布时请勿打包这个目录。
 
-安装包输出到 `installers/`。打包脚本完成后会清理开发依赖和构建缓存；如需保留以便继续开发：
+## 从源码运行与构建
 
-```powershell
-npm run package:windows -- -KeepBuildFiles
-```
-
-开发桌面程序：
+目标平台为 **Windows 10/11 x64**。准备 Node.js 24、Rust 稳定版 MSVC 工具链、包含 Windows SDK 的 Visual Studio C++ Build Tools，以及 Microsoft Edge WebView2。
 
 ```powershell
 npm ci
-npm run tauri -- dev
-```
-
-只预览前端时使用 `npm run dev`，浏览器中显示的是模拟数据。
-
-核心测试：
-
-```powershell
+npm run dev                 # 浏览器预览，仅使用模拟数据
+npm run tauri -- dev        # 运行桌面程序，读取本机数据
+npm run build               # 类型检查并构建前端
 cargo test --locked -p foxes-core --lib
 ```
 
-手动清理可重建的开发文件：
+制作 Windows 安装包与便携程序：
 
 ```powershell
-npm run clean:dev
+npm run package:windows
 ```
 
-该命令保留当前便携程序、`installers/`、源码、Git 历史和应用数据；清理后再次构建需要恢复依赖并重新编译。
+安装包输出到 `installers/`，便携程序输出为根目录的 `Foxes-watch.exe`。打包结束默认清理可重建的开发依赖和缓存；如需保留，可运行 `npm run package:windows -- -KeepBuildFiles`。
 
-## 反馈
+## 源码结构
 
-欢迎通过 Issues 提交问题。请附上软件版本、Windows 版本、涉及的 Agent、复现步骤以及经过脱敏的错误信息。
+- `crates/foxes-core/`：Rust 读取器、用量汇总、估算和历史存储。
+- `src-tauri/`：Tauri 桌面外壳、窗口、托盘、灵动岛和设置持久化。
+- `src/`：React + TypeScript 界面；`src/lib/mock.ts` 提供浏览器演示数据。
+- `scripts/`：Windows 打包与构建清理脚本。
 
-商业授权需另行取得 Foxes 的许可。本仓库公开源码不代表授予商业使用权；详细条款以 [LICENSE](LICENSE) 为准。
+## 反馈与许可
+
+反馈问题时建议提供软件版本、Windows 版本、涉及的 Agent 和复现步骤，请勿附上完整应用数据目录或原始会话日志。
+
+作者：**Foxes**。沿用 **PolyForm Noncommercial 1.0.0**；详细条款见 [LICENSE](LICENSE) 和 [NOTICE](NOTICE)，第三方依赖适用各自的[许可证](THIRD_PARTY_NOTICES.txt)。非商业范围以许可正文为准；商用须另行取得授权。

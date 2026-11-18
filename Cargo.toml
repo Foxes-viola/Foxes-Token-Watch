@@ -1,0 +1,44 @@
+[workspace]
+resolver = "2"
+members = ["crates/foxes-core", "src-tauri"]
+
+[workspace.package]
+version = "0.5.1"
+edition = "2021"
+
+# 开发构建：自己的代码轻度优化，依赖全优化（解析几百 MB 日志时差距很大）
+[profile.dev]
+opt-level = 1
+# 日常开发不保留大型 PDB 和增量副本；需要调试符号时可用 CARGO_PROFILE_DEV_DEBUG=2。
+debug = 0
+incremental = false
+
+[profile.dev.package."*"]
+opt-level = 3
+
+# 发布构建：界面框架和系统接口这一大块按体积优化，整包一起做链接期优化，去掉用不到的代码。
+# 不要加 panic = "abort"：统计线程出错后自动重来靠的是捕获 panic。
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
+
+# 解析日志、读数据库、解压和汇总是热路径，保持速度优先
+[profile.release.package.foxes-core]
+opt-level = 3
+
+[profile.release.package.serde_json]
+opt-level = 3
+
+[profile.release.package.memchr]
+opt-level = 3
+
+[profile.release.package.libsqlite3-sys]
+opt-level = 3
+
+[profile.release.package.zstd-sys]
+opt-level = 3
+
+[profile.release.package.miniz_oxide]
+opt-level = 3

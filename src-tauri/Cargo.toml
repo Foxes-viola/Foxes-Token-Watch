@@ -1,0 +1,27 @@
+[package]
+name = "foxes-token-watch"
+version = "0.5.1"
+edition = "2021"
+authors = ["Foxes"]
+description = "Usage monitor for local AI coding agents"
+publish = false
+
+[[bin]]
+name = "Foxes-Token-Watch"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+foxes-core = { path = "../crates/foxes-core" }
+# custom-protocol：界面资源始终打进 exe，不依赖开发服务器
+tauri = { version = "2", features = ["tray-icon", "custom-protocol"] }
+tauri-plugin-single-instance = "2"
+tauri-plugin-autostart = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# 只用它来检查系统里有没有 WebView2；版本要和 tauri 用的那一份一致，避免编两遍
+[target.'cfg(windows)'.dependencies]
+wry = { version = "0.57", default-features = false }

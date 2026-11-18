@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a1d4e"/>
+      <stop offset="1" stop-color="#100b1f"/>
+    </linearGradient>
+    <linearGradient id="fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cdb0ff"/>
+      <stop offset="1" stop-color="#7a48f2"/>
+    </linearGradient>
+    <linearGradient id="ear" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a47bff"/>
+      <stop offset="1" stop-color="#6a3be3"/>
+    </linearGradient>
+    <linearGradient id="coin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe596"/>
+      <stop offset="1" stop-color="#ffa83a"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#bg)"/>
+  <rect x="17.5" y="17.5" width="477" height="477" rx="110.5" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="3"/>
+
+  <!-- purple fox -->
+  <g transform="translate(-2.64 1.36) scale(0.94)">
+    <g stroke-linejoin="round" stroke-width="14">
+      <path d="M112 86 L226 184 L122 266 Z" fill="url(#ear)" stroke="url(#ear)"/>
+      <path d="M400 86 L286 184 L390 266 Z" fill="url(#ear)" stroke="url(#ear)"/>
+      <path d="M256 172 L398 238 L428 280 L256 434 L84 280 L114 238 Z" fill="url(#fur)" stroke="url(#fur)"/>
+      <path d="M84 280 L206 304 L256 434 Z" fill="#f5eeff" stroke="#f5eeff"/>
+      <path d="M428 280 L306 304 L256 434 Z" fill="#f5eeff" stroke="#f5eeff"/>
+    </g>
+    <ellipse cx="190" cy="266" rx="17" ry="15" fill="#1a1230"/>
+    <ellipse cx="322" cy="266" rx="17" ry="15" fill="#1a1230"/>
+    <path d="M232 400 L280 400 L256 432 Z" fill="#1a1230" stroke="#1a1230" stroke-width="12" stroke-linejoin="round"/>
+  </g>
+
+  <!-- token stacks rising like a usage chart -->
+  <g fill="#150e2a">
+    <rect x="286" y="382" width="54" height="58" rx="15"/>
+    <rect x="340" y="354" width="54" height="86" rx="15"/>
+    <rect x="394" y="326" width="54" height="114" rx="15"/>
+  </g>
+  <g fill="url(#coin)">
+    <rect x="290" y="414" width="46" height="22" rx="11"/>
+    <rect x="290" y="386" width="46" height="22" rx="11"/>
+
+    <rect x="344" y="414" width="46" height="22" rx="11"/>
+    <rect x="344" y="386" width="46" height="22" rx="11"/>
+    <rect x="344" y="358" width="46" height="22" rx="11"/>
+
+    <rect x="398" y="414" width="46" height="22" rx="11"/>
+    <rect x="398" y="386" width="46" height="22" rx="11"/>
+    <rect x="398" y="358" width="46" height="22" rx="11"/>
+    <rect x="398" y="330" width="46" height="22" rx="11"/>
+  </g>
+  <g fill="#ffffff" fill-opacity="0.55">
+    <rect x="300" y="391" width="26" height="3" rx="1.5"/>
+    <rect x="354" y="363" width="26" height="3" rx="1.5"/>
+    <rect x="408" y="335" width="26" height="3" rx="1.5"/>
+  </g>
+</svg>

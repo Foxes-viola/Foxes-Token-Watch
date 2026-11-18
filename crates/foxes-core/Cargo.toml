@@ -1,0 +1,25 @@
+[package]
+name = "foxes-core"
+version.workspace = true
+edition.workspace = true
+description = "Foxes Token Watch 的采集与统计内核：只读解析各 AI agent 的本机记录"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+memchr = "2"
+zstd = { version = "0.13", default-features = false }
+flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = [
+  "Win32_Foundation",
+  "Win32_System_Threading",
+  "Win32_System_Diagnostics_ToolHelp",
+] }
+
+[[bin]]
+name = "fw-probe"
+path = "src/bin/fw-probe.rs"

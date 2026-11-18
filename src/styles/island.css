@@ -1,0 +1,459 @@
+/* 灵动岛始终是深色的，不跟随主题 */
+html.island-page,
+html.island-page[data-theme='light'] {
+  color-scheme: dark;
+  --bg-raised: #15121f;
+  --bg-sunken: #1b1826;
+  --bg-hover: #1e1a2b;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --text: #f1eef8;
+  --text-2: #b3aec3;
+  --text-3: #7d7890;
+  --accent: #ff8a3d;
+  --accent-2: #ffb24a;
+  --accent-soft: rgba(255, 138, 61, 0.16);
+  --c-input: #5aa9ff;
+  --c-cache-read: #3ddc97;
+  --c-cache-write: #b58cff;
+  --c-output: #ff8a3d;
+  --c-think: #ffd166;
+  --agent-claude: #f0845c;
+  --agent-codex: #6ea8fe;
+  --agent-deepseek: #45d0c1;
+  --agent-antigravity: #c28cff;
+  --ok: #3ddc97;
+  --slow: #ffd166;
+  --unstable: #ff9f43;
+  --down: #ff5d6c;
+  --idle: #7d7890;
+}
+
+html.island-page,
+html.island-page body {
+  background: transparent;
+  color: var(--text);
+}
+
+/* 用浏览器调界面时给一个像桌面的背景 */
+html.island-page.dev body {
+  background: linear-gradient(135deg, #24345f, #5d477c 55%, #a85e6c);
+}
+
+/* 岛在窗口顶部居中，靠改自己的宽高来展开和收起 */
+.island {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 17px;
+  background: #09080d;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.11),
+    0 2px 6px rgba(0, 0, 0, 0.36);
+  overflow: hidden;
+  transition:
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 0.3s,
+    box-shadow 0.3s;
+}
+
+/* 展开时带一点回弹 */
+.island.open {
+  border-radius: 20px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.11),
+    0 8px 16px rgba(0, 0, 0, 0.42);
+  transition:
+    width 0.36s cubic-bezier(0.3, 1.25, 0.4, 1),
+    height 0.36s cubic-bezier(0.3, 1.25, 0.4, 1),
+    border-radius 0.3s,
+    box-shadow 0.3s;
+}
+
+.pill,
+.isl-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: max-content;
+  height: 34px;
+  padding: 0 13px 0 6px;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 0.16s 0.1s;
+}
+
+.pill b {
+  font-weight: 650;
+  letter-spacing: 0.1px;
+}
+
+.island.open .pill {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+
+.avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.avatar .dot {
+  position: absolute;
+  right: -3px;
+  bottom: -2px;
+  width: 7px;
+  height: 7px;
+  --badge-edge: #09080d;
+  border: 2px solid var(--badge-edge);
+  box-sizing: content-box;
+  --pulse-from: 0.44;
+}
+
+/* 角标带一圈深色描边：光环要从描边外沿开始扩散，所以连描边一起铺满；角标自己的面（圆点和描边）改由盖在光环上面的 ::before 来画，
+   描边和圆点才不会被光环染色。两层叠在同一格里居中，边框照抄角标自己的：系统缩放不是整数倍时
+   边框会被取整到整像素，照抄才能和角标严丝合缝。光环自己的 z-index 是 1（见 base.css），盖在上面的这层要比它高 */
+.avatar .dot.pulse {
+  display: grid;
+  grid-template: 100% / 100%;
+  place-items: center;
+  isolation: isolate;
+  background: none;
+  border-color: transparent;
+}
+
+.avatar .dot.pulse::before,
+.avatar .dot.pulse::after {
+  grid-area: 1 / 1;
+  box-sizing: content-box;
+  width: 100%;
+  height: 100%;
+  border: inherit;
+  border-radius: inherit;
+}
+
+.avatar .dot.pulse::before {
+  content: '';
+  z-index: 2;
+  border-color: var(--badge-edge);
+  background: var(--tone);
+}
+
+.avatar .dot.pulse::after {
+  border-color: var(--tone);
+}
+
+.avatar .dot.done {
+  background: var(--accent-2);
+}
+
+/* 有对话刚跑完一轮：头像轻轻跳两下 */
+.avatar.flash .app-icon {
+  animation: avatar-flash 0.9s ease 2;
+}
+
+@keyframes avatar-flash {
+  30% {
+    transform: translateY(-2px) scale(1.12);
+  }
+  60% {
+    transform: translateY(0) scale(0.97);
+  }
+}
+
+.isl-card {
+  width: 340px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+
+.island.open .isl-card {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.2s 0.08s;
+}
+
+/* 看不见的那一面（收起时的卡片、展开时的胶囊、贴边收起时的胶囊）先把光环动画停住，露出来再接着跑：
+   动画虽然由合成器画，可每跑完一轮页面主线程都要醒来几帧，看不见也照样醒 */
+.island:not(.open) .isl-card .dot.pulse::after,
+.island.open .pill .dot.pulse::after,
+.island[data-tucked] .pill .dot.pulse::after {
+  animation-play-state: paused;
+}
+
+.isl-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 14px 0 11px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.isl-name {
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+}
+
+.isl-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.isl-state.on {
+  color: var(--text);
+}
+
+.isl-state b {
+  font-size: 13px;
+}
+
+.isl-body {
+  padding: 0 12px 12px;
+}
+.isl-toast {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 13%, transparent);
+}
+
+.isl-toast .num {
+  color: var(--text-2);
+}
+
+.isl-section {
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+}
+
+.isl-row {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.isl-main {
+  min-width: 0;
+}
+
+.isl-title {
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.isl-meta {
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.isl-row .chip .chip-extra {
+  max-width: 64px;
+}
+
+.isl-empty,
+.isl-more {
+  padding: 3px 0;
+  text-align: center;
+  font-size: 12px;
+}
+
+.isl-today {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.isl-today > b {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.isl-hit {
+  margin-left: auto;
+}
+
+.isl-hit b {
+  font-size: 13px;
+  color: var(--c-cache-read);
+}
+
+.compbar {
+  display: flex;
+  gap: 2px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--bg-sunken);
+}
+
+.compbar i {
+  flex-basis: 0;
+  min-width: 3px;
+  transition: flex-grow 0.4s ease;
+}
+
+.isl-stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.isl-stats > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.isl-stats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.isl-stats i {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+}
+
+.isl-stats b {
+  font-size: 13px;
+}
+
+.isl-net {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px 12px;
+  font-size: 12px;
+}
+
+.isl-net-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.isl-net-name {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.isl-foot {
+  display: flex;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.isl-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  border-radius: 9px;
+  font-size: 12px;
+  color: var(--text-2);
+  background: rgba(255, 255, 255, 0.07);
+  transition:
+    background 0.15s,
+    color 0.15s,
+    filter 0.15s;
+}
+
+.isl-btn:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.isl-btn.primary {
+  flex: 1.3;
+  color: #1a1206;
+  font-weight: 600;
+  background: linear-gradient(180deg, var(--accent-2), var(--accent));
+}
+
+.isl-btn.primary:hover {
+  filter: brightness(1.08);
+}
+
+.isl-btn.on {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* 窗口保留在本屏，原生可点区域沿同一侧收窄，在双屏接缝处也只露出把手。 */
+.island[data-dock] {
+  top: 0;
+  transform: none;
+  transition: none;
+}
+
+.island[data-dock='left'] { left: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.island[data-dock='right'] { left: auto; right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.edge-grip { display: none; }
+
+.island[data-tucked] .pill,
+.island[data-tucked] .isl-card { visibility: hidden; }
+
+.island[data-tucked] .edge-grip {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+  background: var(--bg-raised);
+}
+
+.edge-grip span {
+  width: 3px;
+  height: 18px;
+  border-radius: 2px;
+  background: currentColor;
+  color: var(--text-3);
+}
+.edge-grip .tone-ok { color: var(--ok); }
+.edge-grip .tone-unstable { color: var(--unstable); }
+.edge-grip .tone-down { color: var(--down); }
+.edge-grip.done span { color: var(--accent-2); }

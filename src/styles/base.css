@@ -1,0 +1,358 @@
+:root {
+  color-scheme: dark;
+  --bg: #0d0b14;
+  --bg-raised: #15121f;
+  --bg-sunken: #100d19;
+  --bg-hover: #1e1a2b;
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.13);
+  --text: #ece9f4;
+  --text-2: #a9a4b9;
+  --text-3: #6f6a80;
+  --accent: #ff8a3d;
+  --accent-2: #ffb24a;
+  --accent-soft: rgba(255, 138, 61, 0.14);
+
+  --c-input: #5aa9ff;
+  --c-cache-read: #3ddc97;
+  --c-cache-write: #b58cff;
+  --c-output: #ff8a3d;
+  --c-think: #ffd166;
+  --c-total: #dfe5f2;
+  --c-requests: #35d0e0;
+  /* Token 速率卡的三个时段：近 1 分钟、近 30 分钟、近 1 小时 */
+  --c-rate-1m: #4cb8ff;
+  --c-rate-30m: #ffc145;
+  --c-rate-1h: #a78bfa;
+
+  --agent-claude: #f0845c;
+  --agent-codex: #6ea8fe;
+  --agent-deepseek: #45d0c1;
+  --agent-antigravity: #c28cff;
+
+  --ok: #3ddc97;
+  --slow: #ffd166;
+  --unstable: #ff9f43;
+  --down: #ff5d6c;
+  --idle: #6f6a80;
+
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  --font: 'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei UI', 'PingFang SC', system-ui, sans-serif;
+  --font-num: 'Segoe UI Variable Display', 'Segoe UI', 'Microsoft YaHei UI', system-ui, sans-serif;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f3f1f8;
+  --bg-raised: #ffffff;
+  --bg-sunken: #ece9f3;
+  --bg-hover: #efecf6;
+  --line: rgba(24, 18, 48, 0.09);
+  --line-strong: rgba(24, 18, 48, 0.16);
+  --text: #1b1730;
+  --text-2: #5c5770;
+  --text-3: #8f8a9f;
+  --accent: #ee6a1b;
+  --accent-2: #ff9a3c;
+  --accent-soft: rgba(238, 106, 27, 0.11);
+
+  --c-input: #2f86e6;
+  --c-cache-read: #14b473;
+  --c-cache-write: #8b5cf6;
+  --c-output: #ee6a1b;
+  --c-think: #d49600;
+  --c-total: #47506a;
+  --c-requests: #0aa5b8;
+  --c-rate-1m: #1f8fe0;
+  --c-rate-30m: #d98a00;
+  --c-rate-1h: #8b5cf6;
+
+  --agent-claude: #dd6a40;
+  --agent-codex: #3f83f0;
+  --agent-deepseek: #17a999;
+  --agent-antigravity: #9b5cf0;
+
+  --ok: #14b473;
+  --slow: #d49600;
+  --unstable: #ef7d1a;
+  --down: #e5484d;
+  --idle: #8f8a9f;
+  --shadow: 0 10px 28px rgba(40, 30, 80, 0.12);
+}
+
+/* 设置里开了“减少动效”：循环动画和过渡都一步到位，不再一直重画 */
+[data-motion='reduced'] *,
+[data-motion='reduced'] *::before,
+[data-motion='reduced'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.5 var(--font);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
+
+/* 页面里出现的软件图标（design/icon.svg） */
+.app-icon {
+  display: block;
+  flex: none;
+  -webkit-user-drag: none;
+}
+
+.num {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+}
+
+.muted {
+  color: var(--text-3);
+}
+
+.dim {
+  color: var(--text-2);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* —— 通用小部件 —— */
+
+.agent-badge {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border-radius: 28%;
+  color: #14101f;
+  font-weight: 700;
+  font-family: var(--font-num);
+  letter-spacing: -0.3px;
+  background: var(--badge-color, var(--accent));
+}
+
+.dot {
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tone, var(--idle));
+}
+
+/* 圆点向外扩散的光环。只动缩放和透明度，交给合成器去画：直接动 box-shadow 的话，每一帧都要重算样式、重画。
+   光环盖在圆点上面：满尺寸时是比圆点大一圈（7px）的同色实心圆，从刚好和圆点一样大（--pulse-from）放到满尺寸，同时淡出。
+   --pulse-from = 圆点直径 ÷（圆点直径 + 14px），圆点换了大小要跟着改。
+   z-index 让光环排到页面其余内容之后才画：排在合成器动画后面画的内容会被挤到单独的图层里，
+   那一层里的文字用不了子像素平滑（会发虚），所以别让别的内容排在光环后面。 */
+.dot.pulse::after {
+  content: '';
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--tone);
+  box-shadow: 0 0 0 7px var(--tone);
+  opacity: 0;
+  pointer-events: none;
+  animation: pulse 1.6s ease-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(var(--pulse-from, 0.3636));
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.tone-ok {
+  --tone: var(--ok);
+}
+.tone-slow {
+  --tone: var(--slow);
+}
+.tone-unstable {
+  --tone: var(--unstable);
+}
+.tone-down {
+  --tone: var(--down);
+}
+.tone-idle {
+  --tone: var(--idle);
+}
+.tone-think {
+  --tone: var(--c-think);
+}
+.tone-write {
+  --tone: var(--c-output);
+}
+.tone-tool {
+  --tone: var(--c-input);
+}
+.tone-request {
+  --tone: var(--c-cache-write);
+}
+.tone-retry {
+  --tone: var(--down);
+}
+.tone-wait {
+  --tone: var(--slow);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 11px;
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--tone, var(--text-2));
+  background: color-mix(in srgb, var(--tone, var(--text-3)) 14%, transparent);
+}
+
+.chip .dot {
+  width: 6px;
+  height: 6px;
+  --pulse-from: 0.3;
+}
+
+.chip .chip-extra {
+  color: var(--text-2);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 5px;
+  font-size: 11px;
+  color: var(--text-3);
+  border: 1px solid var(--line-strong);
+  white-space: nowrap;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border-radius: 10px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+}
+
+.segmented button {
+  height: 26px;
+  padding: 0 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  color: var(--text-2);
+  transition: background 0.15s, color 0.15s;
+}
+
+.segmented button:hover {
+  color: var(--text);
+}
+
+.segmented button.active {
+  background: var(--bg-raised);
+  color: var(--text);
+  box-shadow: 0 1px 0 var(--line-strong), 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.switch {
+  position: relative;
+  flex: none;
+  width: 38px;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--line-strong);
+  transition: background 0.18s;
+}
+
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.18s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.switch.on {
+  background: var(--accent);
+}
+
+.switch.on::after {
+  transform: translateX(16px);
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
